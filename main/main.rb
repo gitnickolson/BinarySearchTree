@@ -3,9 +3,8 @@ class Tree
   def initialize(array)
     @root = build_tree(array)
     @node_counter = 0
-    p root.value
+    root.value
   end
-
 
   def build_tree(array)
     return nil if array.empty?
@@ -18,9 +17,9 @@ class Tree
       p split_array = [array, []]
     else
       p split_array = array.each_slice((array.length / 2.0).round).to_a
-      p left_node = build_tree(split_array[0])
-      p right_node = build_tree(split_array[1])
     end
+    p left_node = build_tree(split_array[0])
+    p right_node = build_tree(split_array[1])
 
     Node.new(node_value, left_node, right_node)
   end
@@ -34,19 +33,12 @@ end
 
 
 class Node
-  include Comparable
   attr_accessor :value, :left_node, :right_node, :comparison_result
   def initialize(value, left_node = nil, right_node = nil)
     @value = value
     @left_node = left_node
     @right_node = right_node
     comparison_result = left_node <=> right_node
-
-    if comparison_result == 1
-      temp = left_node
-      left_node = right_node
-      right_node = temp
-    end
   end
 end
 
