@@ -10,15 +10,15 @@ class Tree
 
     array = array.uniq.sort
     middle = array.length / 2
-    p node_value = array.delete_at(middle)
+    node_value = array.delete_at(middle)
 
     if array.length <= 1
-      p split_array = [array, []]
+      split_array = [array, []]
     else
-      p split_array = array.each_slice((array.length / 2.0).round).to_a
+      split_array = array.each_slice((array.length / 2.0).round).to_a
     end
-    p left_node = build_tree(split_array[0])
-    p right_node = build_tree(split_array[1])
+    left_node = build_tree(split_array[0])
+    right_node = build_tree(split_array[1])
 
     Node.new(node_value, left_node, right_node)
   end
@@ -27,29 +27,32 @@ class Tree
     current_node = root
     new_node = Node.new(value)
     direction = nil
+    nil_node = :nothing
 
-    if current_node.value < new_node.value
-      direction = :right
-    else
-      direction = :left
-    end
-
-    case direction
-    when :left
-      while current_node.left_node != nil
-        return "The given value is already in the tree" if current_node == value
+    while nil_node != nil
+      pp current_node
+      pp nil_node
+      return "The given value is already in the tree" if current_node.value == value
+      if current_node.value < new_node.value
+        direction = :right
         last_node = current_node
+        nil_node = current_node.right_node
+        current_node = current_node.right_node
+
+      else
+        direction = :left
+        last_node = current_node
+        nil_node = current_node.left_node
         current_node = current_node.left_node
       end
-      current_node.left_node = new_node
+    end
 
-    when :right
-      while current_node.right_node != nil
-        return "The given value is already in the tree" if current_node == value
-        last_node = current_node
-        current_node = current_node.right_node
-      end
-      current_node.right_node = new_node
+    p direction
+    p current_node.inspect
+    if direction == :left
+      last_node.left_node = new_node
+    else
+      last_node.right_node = new_node
     end
   end
 
@@ -76,6 +79,7 @@ class Node
 end
 
 BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+p BST.insert(5)
 BST.insert(29)
 
 BST.pretty_print
