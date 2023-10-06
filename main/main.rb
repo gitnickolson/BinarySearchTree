@@ -3,7 +3,6 @@ class Tree
   def initialize(array)
     @root = build_tree(array)
     @node_counter = 0
-    root.value
   end
 
   def build_tree(array)
@@ -22,6 +21,39 @@ class Tree
     p right_node = build_tree(split_array[1])
 
     Node.new(node_value, left_node, right_node)
+  end
+
+  def insert(value)
+    current_node = root
+    new_node = Node.new(value)
+    direction = nil
+
+    if current_node.value < new_node.value
+      direction = :right
+    else
+      direction = :left
+    end
+
+    case direction
+    when :left
+      while current_node.left_node != nil
+        return "The given value is already in the tree" if current_node == value
+        last_node = current_node
+        current_node = current_node.left_node
+      end
+      current_node.left_node = new_node
+
+    when :right
+      while current_node.right_node != nil
+        last_node = current_node
+        current_node = current_node.right_node
+      end
+      current_node.right_node = new_node
+    end
+  end
+
+  def delete(value)
+
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -43,6 +75,9 @@ class Node
 end
 
 BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+BST.insert(29)
+
 BST.pretty_print
+
 
 
