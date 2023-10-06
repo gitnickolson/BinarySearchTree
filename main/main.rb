@@ -45,6 +45,7 @@ class Tree
 
     when :right
       while current_node.right_node != nil
+        return "The given value is already in the tree" if current_node == value
         last_node = current_node
         current_node = current_node.right_node
       end
