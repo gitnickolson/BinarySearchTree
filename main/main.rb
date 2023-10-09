@@ -132,29 +132,7 @@ class Tree
   end
 
   def height(value)
-    current_node = root
-    height_count = 0
-    post_value = false
 
-    while current_node != nil
-      if current_node.value == value || post_value == true
-        if post_value == true
-          height_count += 1
-        end
-        post_value = true
-      end
-
-      if current_node.value < value
-        last_node = current_node
-        current_node = current_node.right_node
-
-      else
-        last_node = current_node
-        current_node = current_node.left_node
-      end
-    end
-
-    p height_count
   end
 
   def depth(value)
@@ -181,19 +159,20 @@ class Tree
     queue = []
     sorted_array = []
 
+    queue << current_node
+
     while current_node != nil
       queue << current_node.left_node
       queue << current_node.right_node
 
       if block_given?
         yield(queue[0])
+      else
+        sorted_array << current_node.value
       end
 
-      sorted_array << current_node.value
-
+      queue.shift
       current_node = queue[0]
-      queue[0] = nil
-      queue.compact!
     end
 
     if !block_given?
@@ -219,7 +198,10 @@ class Node
 end
 
 ###########################################################################################
-BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 40, 5, 7, 9, 67, 6345, 324])
+
+BST.level_order
+BST.level_order{|element| p element.value}
 
 puts "---------------------------------------------"
 BST.pretty_print
