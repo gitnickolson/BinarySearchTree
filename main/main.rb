@@ -50,12 +50,10 @@ class Tree
 
   def delete(value)
     current_node = root
-    new_node = Node.new(value)
     last_node = nil
 
-    while current_node != nil
-      break if last_node == value
-      if current_node.value < new_node.value
+    while current_node.value != value
+      if current_node.value < value
         direction = :right
         last_node = current_node
         current_node = current_node.right_node
@@ -67,16 +65,62 @@ class Tree
       end
     end
 
-    last_node
+    return p "The value doesn't exist in the tree!" if current_node == nil
+    return_value = current_node
+    previous_last_node = last_node
+
+    if current_node.left_node == nil && current_node.right_node == nil #Keine child nodes
+      if direction == :right
+        previous_last_node.right_node = nil
+      else
+        previous_last_node.left_node = nil
+      end
+
+    elsif current_node.left_node == nil #Eine child node
+      if direction == :right
+        previous_last_node.right_node = current_node.right_node
+      else
+        previous_last_node.left_node = current_node.right_node
+      end
+
+    elsif current_node.right_node == nil #Eine child node
+      if direction == :right
+        previous_last_node.right_node = current_node.left_node
+      else
+        previous_last_node.left_node = current_node.left_node
+      end
+
+    else #Zwei child nodes
+      right_save = current_node.right_node
+      left_save = current_node.left_node
+
+      current_node = current_node.right_node
+      while current_node.left_node != nil
+        last_node = current_node
+        current_node = current_node.left_node
+      end
+
+      last_node.left_node = current_node.right_node
+
+      current_node.left_node = left_save
+      current_node.right_node = right_save
+
+      if direction == :right
+        previous_last_node.right_node = current_node
+      else
+        previous_last_node.left_node = current_node
+      end
+    end
+
+    return_value
   end
 
   def find(value)
     current_node = root
-    new_node = Node.new(value)
 
     while current_node != nil
       return p "#{current_node}" if current_node.value == value
-      if current_node.value < new_node.value
+      if current_node.value < value
         direction = :right
         last_node = current_node
         current_node = current_node.right_node
@@ -91,7 +135,6 @@ class Tree
 
   def height(value)
     current_node = root
-    new_node = Node.new(value)
     height_count = 0
     post_value = false
 
@@ -103,7 +146,7 @@ class Tree
         post_value = true
       end
 
-      if current_node.value < new_node.value
+      if current_node.value < value
         direction = :right
         last_node = current_node
         current_node = current_node.right_node
@@ -120,12 +163,11 @@ class Tree
 
   def depth(value)
     current_node = root
-    new_node = Node.new(value)
     depth_count = 0
 
     while current_node != nil
       return p depth_count if current_node.value == value
-      if current_node.value < new_node.value
+      if current_node.value < value
         direction = :right
         last_node = current_node
         current_node = current_node.right_node
@@ -154,15 +196,16 @@ class Node
     @value = value
     @left_node = left_node
     @right_node = right_node
-
   end
 end
 
 BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
 BST.insert(5)
 BST.insert(29)
-BST.delete(29)
+BST.delete(4)
+
 BST.find(67)
+
 BST.depth(67)
 BST.height(67)
 BST.depth(3)
