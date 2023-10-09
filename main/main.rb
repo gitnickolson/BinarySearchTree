@@ -121,12 +121,10 @@ class Tree
     while current_node != nil
       return p "#{current_node}" if current_node.value == value
       if current_node.value < value
-        direction = :right
         last_node = current_node
         current_node = current_node.right_node
 
       else
-        direction = :left
         last_node = current_node
         current_node = current_node.left_node
       end
@@ -147,12 +145,10 @@ class Tree
       end
 
       if current_node.value < value
-        direction = :right
         last_node = current_node
         current_node = current_node.right_node
 
       else
-        direction = :left
         last_node = current_node
         current_node = current_node.left_node
       end
@@ -168,17 +164,40 @@ class Tree
     while current_node != nil
       return p depth_count if current_node.value == value
       if current_node.value < value
-        direction = :right
         last_node = current_node
         current_node = current_node.right_node
         depth_count += 1
 
       else
-        direction = :left
         last_node = current_node
         current_node = current_node.left_node
         depth_count += 1
       end
+    end
+  end
+
+  def level_order
+    current_node = root
+    queue = []
+    sorted_array = []
+
+    while current_node != nil
+      queue << current_node.left_node
+      queue << current_node.right_node
+
+      if block_given?
+        yield(queue[0])
+      end
+
+      sorted_array << current_node.value
+
+      current_node = queue[0]
+      queue[0] = nil
+      queue.compact!
+    end
+
+    if !block_given?
+      p sorted_array
     end
   end
 
@@ -199,18 +218,10 @@ class Node
   end
 end
 
+###########################################################################################
 BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
-BST.insert(5)
-BST.insert(29)
-BST.delete(4)
 
-BST.find(67)
-
-BST.depth(67)
-BST.height(67)
-BST.depth(3)
-BST.height(3)
-
+puts "---------------------------------------------"
 BST.pretty_print
 
 
