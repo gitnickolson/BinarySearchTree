@@ -83,13 +83,8 @@ class Tree
     end
     return pp "The value doesn't exist in the tree!" if current_node == nil
 
-    deleted_value = current_node
-    if current_node == root
-      previous_node_save = current_node
-    else
-      previous_node
-      previous_node_save = previous_node
-    end
+    deleted_value = root
+    current_node == root ? previous_node_save = previous_node : previous_node_save = current_node
 
     right_save = current_node.right
     left_save = current_node.left
@@ -100,7 +95,7 @@ class Tree
     elsif current_node.left == nil || current_node.right == nil #Eine child node
       replace_node(previous_node_save, current_node, direction, 1)
 
-    elsif current_node.left != nil && current_node.right != nil 
+    elsif current_node.left != nil && current_node.right != nil
       current_node = current_node.right
       while current_node.left != nil
         previous_node = current_node
@@ -121,7 +116,7 @@ class Tree
     deleted_value
   end
 
-  def replace_node(previous_node_save, node, direction, children, root = nil)
+  def replace_node(previous_node_save, node, direction, children, is_root = false)
     if direction == :right
       case children
       when 0
@@ -131,7 +126,7 @@ class Tree
         previous_node_save.right = node.left
 
       when 2
-        if root == nil
+        if root == true
           previous_node_save.value = node.value
         else
           previous_node_save.right = node
@@ -147,7 +142,7 @@ class Tree
         previous_node_save.left = node.left
 
       when 2
-        if root == nil
+        if root == true
           previous_node_save.left = node
         else
           previous_node_save.value = node.value
@@ -182,8 +177,47 @@ class Tree
     end
   end
 
-  def inorder
+  def inorder(node = root, result = [])
+    stack = []
+    current_node = node
 
+    while !stack.empty? || current_node != nil
+      while current_node != nil
+        stack << current_node
+        current_node = current_node.left
+      end
+
+      current_node = stack.pop
+
+      if block_given?
+        yield current_node
+      else
+        result << current_node.value
+      end
+
+      current_node = current_node.right
+    end
+
+    if !block_given?
+      p result
+    end
+  end
+
+  def inorder_recursive(node = root, result = [])
+    if node != nil
+      inorder(node.left, result)
+      if block_given?
+        yield node
+      else
+        result << node.value
+      end
+
+      inorder(node.right, result)
+    end
+
+    if !block_given?
+      p result
+    end
   end
 
   def preorder
@@ -237,7 +271,19 @@ end
 ###########################################################################################
 BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 40, 5, 7, 9, 67, 6345, 324])
 
-BST.delete(9)
+puts "Level order:"
+BST.level_order
+
+puts ""
+
+puts "In order:"
+BST.inorder
+
+puts ""
+
+
+BST.delete(5)
+
 puts "---------------------------------------------"
 BST.pretty_print
 
