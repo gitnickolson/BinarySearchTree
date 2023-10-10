@@ -84,7 +84,7 @@ class Tree
     return pp "The value doesn't exist in the tree!" if current_node == nil
 
     deleted_value = root
-    current_node == root ? previous_node_save = previous_node : previous_node_save = current_node
+    previous_node_save = current_node == root ? previous_node : current_node
 
     right_save = current_node.right
     left_save = current_node.left
@@ -96,6 +96,7 @@ class Tree
       replace_node(previous_node_save, current_node, direction, 1)
 
     elsif current_node.left != nil && current_node.right != nil
+
       current_node = current_node.right
       while current_node.left != nil
         previous_node = current_node
@@ -108,7 +109,7 @@ class Tree
       previous_node.left = nil
 
       if deleted_value == root
-        replace_node(previous_node_save, current_node, direction, 2, root)
+        replace_node(previous_node_save, current_node, direction, 2, true)
       else
         replace_node(previous_node_save, current_node, direction, 2)
       end
@@ -204,16 +205,17 @@ class Tree
     end
   end
 
-  def inorder_recursive(current_node = root, result = [])
+  def inorder_recursive(current_node = root, result = [], &block)
+
     if current_node != nil
-      inorder(current_node.left, result)
+      inorder_recursive(current_node.left, result, &block)
       if block_given?
         yield current_node
       else
         result << current_node.value
       end
 
-      inorder(current_node.right, result)
+      inorder_recursive(current_node.right, result, &block)
     end
 
     if !block_given?
@@ -259,7 +261,7 @@ class Tree
     end
   end
 
-  def postorder
+  def postorder_test
     stack = []
     result = []
     current_node = root
@@ -282,7 +284,6 @@ class Tree
 
     p result
   end
-
 
   def height(value)
 
@@ -339,8 +340,8 @@ p BST.level_order
 puts ""
 
 puts "Inorder:"
-p BST.inorder
-# BST.inorder{|element| p element}
+BST.inorder
+# BST.inorder_recursive{|element| p element.value}
 
 puts ""
 
@@ -358,6 +359,3 @@ puts ""
 
 puts "---------------------------------------------"
 BST.pretty_print
-
-
-
