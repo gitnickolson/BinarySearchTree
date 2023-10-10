@@ -86,7 +86,7 @@ class Tree
     end
     return pp "The value doesn't exist in the tree!" if current_node.nil?
 
-    deleted_value = root
+    deleted_value = value
     previous_node_save = current_node == root ? previous_node : current_node
 
     right_save = current_node.right
@@ -120,7 +120,7 @@ class Tree
     deleted_value
   end
 
-  def replace_node(previous_node_save, node, direction, children, _is_root = false)
+  def replace_node(previous_node_save, node, direction, children, root = false)
     if direction == :right
       case children
       when 0
@@ -147,9 +147,9 @@ class Tree
 
       when 2
         if root == true
-          previous_node_save.left = node
-        else
           previous_node_save.value = node.value
+        else
+          previous_node_save.left = node
         end
       end
     end
@@ -357,6 +357,7 @@ p BST.postorder
 # BST.postorder{|element| p element}
 
 puts ''
+BST.delete(9)
 
 puts '---------------------------------------------'
 BST.pretty_print
