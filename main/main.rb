@@ -177,9 +177,10 @@ class Tree
     end
   end
 
-  def inorder(node = root, result = [])
+  def inorder
+    current_node = root
+    result = []
     stack = []
-    current_node = node
 
     while !stack.empty? || current_node != nil
       while current_node != nil
@@ -203,16 +204,16 @@ class Tree
     end
   end
 
-  def inorder_recursive(node = root, result = [])
-    if node != nil
-      inorder(node.left, result)
+  def inorder_recursive(current_node = root, result = [])
+    if current_node != nil
+      inorder(current_node.left, result)
       if block_given?
-        yield node
+        yield current_node
       else
-        result << node.value
+        result << current_node.value
       end
 
-      inorder(node.right, result)
+      inorder(current_node.right, result)
     end
 
     if !block_given?
@@ -221,7 +222,28 @@ class Tree
   end
 
   def preorder
+    current_node = root
+    result = []
+    stack = []
 
+    while !stack.empty? || current_node != nil
+      if current_node != nil
+        if block_given?
+          yield current_node
+        else
+          result << current_node.value
+        end
+
+        stack << current_node.right if current_node.right != nil
+        current_node = current_node.left
+      else
+        current_node = stack.pop
+      end
+    end
+
+    if !block_given?
+      p result
+    end
   end
 
   def postorder
@@ -281,8 +303,8 @@ BST.inorder
 
 puts ""
 
-
-BST.delete(5)
+puts "Pre order:"
+BST.preorder
 
 puts "---------------------------------------------"
 BST.pretty_print
