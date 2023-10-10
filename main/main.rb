@@ -173,7 +173,7 @@ class Tree
     end
 
     if !block_given?
-      p sorted_array
+      sorted_array
     end
   end
 
@@ -200,7 +200,7 @@ class Tree
     end
 
     if !block_given?
-      p result
+      result
     end
   end
 
@@ -217,7 +217,7 @@ class Tree
     end
 
     if !block_given?
-      p result
+      result
     end
   end
 
@@ -242,13 +242,47 @@ class Tree
     end
 
     if !block_given?
-      p result
+      result
+    end
+  end
+
+  def postorder(current_node = root, result = [])
+    return if current_node.nil?
+
+    postorder(current_node.left, result)
+    postorder(current_node.right, result)
+
+    result << current_node.value if !result.include?(current_node.value)
+
+    if !block_given?
+      result
     end
   end
 
   def postorder
+    stack = []
+    result = []
+    current_node = root
 
+    while current_node != nil || !stack.empty?
+      while current_node != nil
+        stack << current_node
+        current_node = current_node.left
+      end
+
+      current_node = stack.last
+      if current_node.right.nil? || current_node.right == result.last
+        stack.pop
+        result << current_node.value
+        current_node = nil
+      else
+        current_node = current_node.right
+      end
+    end
+
+    p result
   end
+
 
   def height(value)
 
@@ -273,6 +307,11 @@ class Tree
     end
   end
 
+  def rebalance
+    array = inorder
+    @root = build_tree(inorder)
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -294,17 +333,28 @@ end
 BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 40, 5, 7, 9, 67, 6345, 324])
 
 puts "Level order:"
-BST.level_order
+p BST.level_order
+# BST.level_order{|element| p element}
 
 puts ""
 
-puts "In order:"
-BST.inorder
+puts "Inorder:"
+p BST.inorder
+# BST.inorder{|element| p element}
 
 puts ""
 
-puts "Pre order:"
-BST.preorder
+puts "Preorder:"
+p BST.preorder
+# BST.preorder{|element| p element}
+
+puts ""
+
+puts "Postorder:"
+p BST.postorder
+#BST.postorder{|element| p element}
+
+puts ""
 
 puts "---------------------------------------------"
 BST.pretty_print
