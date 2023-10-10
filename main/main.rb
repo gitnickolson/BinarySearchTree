@@ -1,5 +1,6 @@
 class Tree
   attr_accessor :array, :root, :node_counter
+
   def initialize(array)
     @root = build_tree(array)
     @node_counter = 0
@@ -12,11 +13,11 @@ class Tree
     middle = array.length / 2
     node_value = array.delete_at(middle)
 
-    if array.length <= 1
-      split_array = [array, []]
-    else
-      split_array = array.each_slice((array.length / 2.0).round).to_a
-    end
+    split_array = if array.length <= 1
+                    [array, []]
+                  else
+                    array.each_slice((array.length / 2.0).round).to_a
+                  end
     left = build_tree(split_array[0])
     right = build_tree(split_array[1])
 
@@ -26,8 +27,9 @@ class Tree
   def find(value)
     current_node = root
 
-    while current_node != nil
+    until current_node.nil?
       return current_node if current_node.value == value
+
       if current_node.value < value
         previous_node = current_node
         current_node = current_node.right
@@ -43,8 +45,9 @@ class Tree
     current_node = root
     new_node = Node.new(value)
 
-    while current_node != nil
+    until current_node.nil?
       return p "The given value is already in the tree (#{value})" if current_node.value == value
+
       if current_node.value < new_node.value
         direction = :right
         previous_node = current_node
@@ -69,7 +72,7 @@ class Tree
     previous_node = nil
     previous_node_save = nil
 
-    while current_node != nil && current_node.value != value
+    while !current_node.nil? && current_node.value != value
       if current_node.value < value
         direction = :right
         previous_node = current_node
@@ -81,7 +84,7 @@ class Tree
         current_node = current_node.left
       end
     end
-    return pp "The value doesn't exist in the tree!" if current_node == nil
+    return pp "The value doesn't exist in the tree!" if current_node.nil?
 
     deleted_value = root
     previous_node_save = current_node == root ? previous_node : current_node
@@ -89,16 +92,16 @@ class Tree
     right_save = current_node.right
     left_save = current_node.left
 
-    if current_node.left == nil && current_node.right == nil # Keine child node
+    if current_node.left.nil? && current_node.right.nil? # Keine child node
       replace_node(previous_node_save, current_node, direction, 0)
 
-    elsif current_node.left == nil || current_node.right == nil #Eine child node
+    elsif current_node.left.nil? || current_node.right.nil? # Eine child node
       replace_node(previous_node_save, current_node, direction, 1)
 
-    elsif current_node.left != nil && current_node.right != nil
+    elsif !current_node.left.nil? && !current_node.right.nil?
 
       current_node = current_node.right
-      while current_node.left != nil
+      until current_node.left.nil?
         previous_node = current_node
         current_node = current_node.left
       end
@@ -117,7 +120,7 @@ class Tree
     deleted_value
   end
 
-  def replace_node(previous_node_save, node, direction, children, is_root = false)
+  def replace_node(previous_node_save, node, direction, children, _is_root = false)
     if direction == :right
       case children
       when 0
@@ -159,7 +162,7 @@ class Tree
 
     queue << current_node
 
-    while current_node != nil
+    until current_node.nil?
       queue << current_node.left
       queue << current_node.right
 
@@ -173,9 +176,9 @@ class Tree
       current_node = queue[0]
     end
 
-    if !block_given?
-      sorted_array
-    end
+    return if block_given?
+
+    sorted_array
   end
 
   def inorder
@@ -183,8 +186,8 @@ class Tree
     result = []
     stack = []
 
-    while !stack.empty? || current_node != nil
-      while current_node != nil
+    while !stack.empty? || !current_node.nil?
+      until current_node.nil?
         stack << current_node
         current_node = current_node.left
       end
@@ -200,14 +203,13 @@ class Tree
       current_node = current_node.right
     end
 
-    if !block_given?
-      result
-    end
+    return if block_given?
+
+    result
   end
 
   def inorder_recursive(current_node = root, result = [], &block)
-
-    if current_node != nil
+    unless current_node.nil?
       inorder_recursive(current_node.left, result, &block)
       if block_given?
         yield current_node
@@ -218,9 +220,9 @@ class Tree
       inorder_recursive(current_node.right, result, &block)
     end
 
-    if !block_given?
-      result
-    end
+    return if block_given?
+
+    result
   end
 
   def preorder
@@ -228,24 +230,24 @@ class Tree
     result = []
     stack = []
 
-    while !stack.empty? || current_node != nil
-      if current_node != nil
+    while !stack.empty? || !current_node.nil?
+      if !current_node.nil?
         if block_given?
           yield current_node
         else
           result << current_node.value
         end
 
-        stack << current_node.right if current_node.right != nil
+        stack << current_node.right unless current_node.right.nil?
         current_node = current_node.left
       else
         current_node = stack.pop
       end
     end
 
-    if !block_given?
-      result
-    end
+    return if block_given?
+
+    result
   end
 
   def postorder(current_node = root, result = [])
@@ -254,11 +256,11 @@ class Tree
     postorder(current_node.left, result)
     postorder(current_node.right, result)
 
-    result << current_node.value if !result.include?(current_node.value)
+    result << current_node.value unless result.include?(current_node.value)
 
-    if !block_given?
-      result
-    end
+    return if block_given?
+
+    result
   end
 
   def postorder_test
@@ -266,8 +268,8 @@ class Tree
     result = []
     current_node = root
 
-    while current_node != nil || !stack.empty?
-      while current_node != nil
+    while !current_node.nil? || !stack.empty?
+      until current_node.nil?
         stack << current_node
         current_node = current_node.left
       end
@@ -285,16 +287,15 @@ class Tree
     p result
   end
 
-  def height(value)
-
-  end
+  def height(value); end
 
   def depth(value)
     current_node = root
     depth_count = 0
 
-    while current_node != nil
+    until current_node.nil?
       return p depth_count if current_node.value == value
+
       if current_node.value < value
         previous_node = current_node
         current_node = current_node.right
@@ -320,9 +321,9 @@ class Tree
   end
 end
 
-
 class Node
   attr_accessor :value, :left, :right
+
   def initialize(value, left = nil, right = nil)
     @value = value
     @left = left
@@ -333,29 +334,29 @@ end
 ###########################################################################################
 BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 40, 5, 7, 9, 67, 6345, 324])
 
-puts "Level order:"
+puts 'Level order:'
 p BST.level_order
 # BST.level_order{|element| p element}
 
-puts ""
+puts ''
 
-puts "Inorder:"
+puts 'Inorder:'
 BST.inorder
 # BST.inorder_recursive{|element| p element.value}
 
-puts ""
+puts ''
 
-puts "Preorder:"
+puts 'Preorder:'
 p BST.preorder
 # BST.preorder{|element| p element}
 
-puts ""
+puts ''
 
-puts "Postorder:"
+puts 'Postorder:'
 p BST.postorder
-#BST.postorder{|element| p element}
+# BST.postorder{|element| p element}
 
-puts ""
+puts ''
 
-puts "---------------------------------------------"
+puts '---------------------------------------------'
 BST.pretty_print
