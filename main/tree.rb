@@ -26,7 +26,15 @@ class Tree
     Node.new(node_value, left, right)
   end
 
+  def pretty_print(node = @root, prefix = '', is_left = true)
+    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
+    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
+    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
+  end
+
   def find(value)
+    return nil if root == nil
+
     current_node = root
 
     until current_node.nil?
@@ -44,6 +52,8 @@ class Tree
   end
 
   def insert(value)
+    return nil if root == nil
+
     current_node = root
     new_node = Node.new(value)
 
@@ -69,26 +79,36 @@ class Tree
     end
   end
 
-  def delete(value)
-    current_node = root
-    previous_node = nil
-    previous_node_save = nil
+  def delete(current_node = root, value)
+    return nil if root == nil
 
+    if current_node.value < value
+      current_node.left = delete(current_node.left, value)
+    elsif data > current_node
+      current_node.right = delete(current_node.right, value)
+    else
+      if current_node
 
-  end
-
-  def replace_node()
-
+      end
+    end
   end
 
   def level_order
+    return nil if root == nil
+
     current_node = root
     queue = []
     sorted_array = []
 
     queue << current_node
 
-    until current_node.nil?
+    until queue.empty?
+      current_node = queue.shift
+
+      if current_node == nil
+        next
+      end
+
       queue << current_node.left
       queue << current_node.right
 
@@ -98,8 +118,7 @@ class Tree
         sorted_array << current_node.value
       end
 
-      queue.shift
-      current_node = queue[0]
+
     end
 
     return if block_given?
@@ -108,6 +127,8 @@ class Tree
   end
 
   def inorder
+    return nil if root == nil
+
     current_node = root
     result = []
     stack = []
@@ -128,13 +149,14 @@ class Tree
 
       current_node = current_node.right
     end
-
     return if block_given?
 
     result
   end
 
   def inorder_recursive(current_node = root, result = [], &block)
+    return nil if root == nil
+
     unless current_node.nil?
       inorder_recursive(current_node.left, result, &block)
       if block_given?
@@ -152,6 +174,8 @@ class Tree
   end
 
   def preorder
+    return nil if root == nil
+
     current_node = root
     result = []
     stack = []
@@ -177,6 +201,8 @@ class Tree
   end
 
   def postorder(current_node = root, result = [])
+    return nil if root == nil
+
     return if current_node.nil?
 
     postorder(current_node.left, result)
@@ -190,6 +216,8 @@ class Tree
   end
 
   def postorder_test
+    return nil if root == nil
+
     stack = []
     result = []
     current_node = root
@@ -213,9 +241,14 @@ class Tree
     p result
   end
 
-  def height(value); end
+  def height(value);
+    return nil if root == nil
+
+  end
 
   def depth(value)
+    return nil if root == nil
+
     current_node = root
     depth_count = 0
 
@@ -236,13 +269,9 @@ class Tree
   end
 
   def rebalance
+    return nil if root == nil
+
     array = inorder
     @root = build_tree(inorder)
-  end
-
-  def pretty_print(node = @root, prefix = '', is_left = true)
-    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
-    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
-    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 end
