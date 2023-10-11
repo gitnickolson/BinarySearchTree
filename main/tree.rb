@@ -33,7 +33,7 @@ class Tree
   end
 
   def find(value)
-    return nil if root == nil
+    return nil if root.nil?
 
     current_node = root
 
@@ -52,7 +52,7 @@ class Tree
   end
 
   def insert(value)
-    return nil if root == nil
+    return nil if root.nil?
 
     current_node = root
     new_node = Node.new(value)
@@ -80,21 +80,19 @@ class Tree
   end
 
   def delete(current_node = root, value)
-    return nil if root == nil
+    return nil if root.nil?
 
     if current_node.value < value
       current_node.left = delete(current_node.left, value)
     elsif data > current_node
       current_node.right = delete(current_node.right, value)
-    else
-      if current_node
+    elsif current_node
 
-      end
     end
   end
 
   def level_order
-    return nil if root == nil
+    return nil if root.nil?
 
     current_node = root
     queue = []
@@ -105,9 +103,7 @@ class Tree
     until queue.empty?
       current_node = queue.shift
 
-      if current_node == nil
-        next
-      end
+      next if current_node.nil?
 
       queue << current_node.left
       queue << current_node.right
@@ -118,7 +114,6 @@ class Tree
         sorted_array << current_node.value
       end
 
-
     end
 
     return if block_given?
@@ -127,7 +122,7 @@ class Tree
   end
 
   def inorder
-    return nil if root == nil
+    return nil if root.nil?
 
     current_node = root
     result = []
@@ -155,7 +150,7 @@ class Tree
   end
 
   def inorder_recursive(current_node = root, result = [], &block)
-    return nil if root == nil
+    return nil if root.nil?
 
     unless current_node.nil?
       inorder_recursive(current_node.left, result, &block)
@@ -174,7 +169,7 @@ class Tree
   end
 
   def preorder
-    return nil if root == nil
+    return nil if root.nil?
 
     current_node = root
     result = []
@@ -201,7 +196,7 @@ class Tree
   end
 
   def postorder(current_node = root, result = [])
-    return nil if root == nil
+    return nil if root.nil?
 
     return if current_node.nil?
 
@@ -216,7 +211,7 @@ class Tree
   end
 
   def postorder_test
-    return nil if root == nil
+    return nil if root.nil?
 
     stack = []
     result = []
@@ -241,13 +236,12 @@ class Tree
     p result
   end
 
-  def height(value);
-    return nil if root == nil
-
+  def height(_value)
+    return nil if root.nil?
   end
 
   def depth(value)
-    return nil if root == nil
+    return nil if root.nil?
 
     current_node = root
     depth_count = 0
@@ -269,7 +263,7 @@ class Tree
   end
 
   def rebalance
-    return nil if root == nil
+    return nil if root.nil?
 
     array = inorder
     @root = build_tree(inorder)
