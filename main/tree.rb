@@ -1,3 +1,5 @@
+require_relative 'node'
+
 class Tree
   attr_accessor :array, :root, :node_counter
 
@@ -72,87 +74,11 @@ class Tree
     previous_node = nil
     previous_node_save = nil
 
-    while !current_node.nil? && current_node.value != value
-      if current_node.value < value
-        direction = :right
-        previous_node = current_node
-        current_node = current_node.right
 
-      else
-        direction = :left
-        previous_node = current_node
-        current_node = current_node.left
-      end
-    end
-    return pp "The value doesn't exist in the tree!" if current_node.nil?
-
-    deleted_value = root
-    previous_node_save = current_node == root ? previous_node : current_node
-
-    right_save = current_node.right
-    left_save = current_node.left
-
-    if current_node.left.nil? && current_node.right.nil? # Keine child node
-      replace_node(previous_node_save, current_node, direction, 0)
-
-    elsif current_node.left.nil? || current_node.right.nil? # Eine child node
-      replace_node(previous_node_save, current_node, direction, 1)
-
-    elsif !current_node.left.nil? && !current_node.right.nil?
-
-      current_node = current_node.right
-      until current_node.left.nil?
-        previous_node = current_node
-        current_node = current_node.left
-      end
-
-      current_node.left = left_save
-      current_node.right = right_save
-
-      previous_node.left = nil
-
-      if deleted_value == root
-        replace_node(previous_node_save, current_node, direction, 2, true)
-      else
-        replace_node(previous_node_save, current_node, direction, 2)
-      end
-    end
-    deleted_value
   end
 
-  def replace_node(previous_node_save, node, direction, children, _is_root = false)
-    if direction == :right
-      case children
-      when 0
-        previous_node_save.right = nil
+  def replace_node()
 
-      when 1
-        previous_node_save.right = node.left
-
-      when 2
-        if root == true
-          previous_node_save.value = node.value
-        else
-          previous_node_save.right = node
-        end
-      end
-
-    else
-      case children
-      when 0
-        previous_node_save.left = nil
-
-      when 1
-        previous_node_save.left = node.left
-
-      when 2
-        if root == true
-          previous_node_save.left = node
-        else
-          previous_node_save.value = node.value
-        end
-      end
-    end
   end
 
   def level_order
@@ -320,43 +246,3 @@ class Tree
     pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 end
-
-class Node
-  attr_accessor :value, :left, :right
-
-  def initialize(value, left = nil, right = nil)
-    @value = value
-    @left = left
-    @right = right
-  end
-end
-
-###########################################################################################
-BST = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 40, 5, 7, 9, 67, 6345, 324])
-
-puts 'Level order:'
-p BST.level_order
-# BST.level_order{|element| p element}
-
-puts ''
-
-puts 'Inorder:'
-BST.inorder
-# BST.inorder_recursive{|element| p element.value}
-
-puts ''
-
-puts 'Preorder:'
-p BST.preorder
-# BST.preorder{|element| p element}
-
-puts ''
-
-puts 'Postorder:'
-p BST.postorder
-# BST.postorder{|element| p element}
-
-puts ''
-
-puts '---------------------------------------------'
-BST.pretty_print
