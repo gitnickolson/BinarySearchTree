@@ -51,6 +51,8 @@ class Tree
         current_node = current_node.left
       end
     end
+
+    current_node
   end
 
   def insert(value)
@@ -60,7 +62,7 @@ class Tree
     new_node = Node.new(value)
 
     until current_node.nil?
-      return p "The given value is already in the tree (#{value})" if current_node.value == value
+      return "The given value is already in the tree (#{value})" if current_node.value == value
 
       if current_node.value < new_node.value
         direction = :right
@@ -136,7 +138,6 @@ class Tree
       else
         sorted_array << current_node.value
       end
-
     end
 
     return if block_given?
@@ -233,8 +234,15 @@ class Tree
     result
   end
 
-  def height(_value)
-    return 'Error: Tree is empty.' if root.nil?
+  def height(value)
+    value = find(value) if value.instance_of?(Integer)
+
+    return 0 if value.nil?
+
+    left_max_height = height(value.left)
+    right_max_height = height(value.right)
+
+    left_max_height > right_max_height ? left_max_height + 1 : right_max_height + 1
   end
 
   def depth(value)
@@ -259,8 +267,18 @@ class Tree
     end
   end
 
+  def balanced?
+    if height(root.left) == height(root.right) || height(root.left) - 1 == height(root.right)
+      true
+    else
+      false
+    end
+  end
+
   def rebalance
     return 'Error: Tree is empty.' if root.nil?
+
+    return 'Error: Tree is already balanced' if balanced?
 
     array = inorder
     @root = build_tree(inorder)
