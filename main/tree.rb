@@ -145,46 +145,18 @@ class Tree
     sorted_array
   end
 
-  def inorder
-    return 'Error: Tree is empty.' if root.nil?
-
-    current_node = root
-    result = []
-    stack = []
-
-    while !stack.empty? || !current_node.nil?
-      until current_node.nil?
-        stack << current_node
-        current_node = current_node.left
-      end
-
-      current_node = stack.pop
-
-      if block_given?
-        yield current_node
-      else
-        result << current_node.value
-      end
-
-      current_node = current_node.right
-    end
-    return if block_given?
-
-    result
-  end
-
-  def inorder_recursive(current_node = root, result = [], &block)
+  def inorder(current_node = root, result = [], &block)
     return 'Error: Tree is empty.' if root.nil?
 
     unless current_node.nil?
-      inorder_recursive(current_node.left, result, &block)
+      inorder(current_node.left, result, &block)
       if block_given?
         yield current_node
       else
         result << current_node.value
       end
 
-      inorder_recursive(current_node.right, result, &block)
+      inorder(current_node.right, result, &block)
     end
 
     return if block_given?
@@ -268,11 +240,21 @@ class Tree
   end
 
   def balanced?
-    if height(root.left) == height(root.right) || height(root.left) - 1 == height(root.right)
-      true
-    else
-      false
+    return 'Error: Tree is empty.' if root.nil?
+
+    is_balanced = false
+
+    inorder do |node|
+      is_balanced = if height(node.left) == height(node.right) || height(node.left) - 1 == height(node.right)
+                      true
+                    else
+                      false
+                    end
+
+      return 'You should have aimed for the head. (false)' unless is_balanced
     end
+
+    'Perfectly balanced, as everything should be. (true)'
   end
 
   def rebalance
