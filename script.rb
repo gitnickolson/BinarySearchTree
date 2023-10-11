@@ -26,6 +26,7 @@ p BST.postorder
 # BST.postorder{|element| p element}
 
 puts ''
+BST.delete(3)
 
 puts '---------------------------------------------'
 BST.pretty_print

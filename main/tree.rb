@@ -27,13 +27,15 @@ class Tree
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
+    return p 'Error: Tree is empty.' if root.nil?
+
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
     pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 
   def find(value)
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     current_node = root
 
@@ -52,7 +54,7 @@ class Tree
   end
 
   def insert(value)
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     current_node = root
     new_node = Node.new(value)
@@ -80,7 +82,7 @@ class Tree
   end
 
   def delete(value, current_node = root)
-    return nil if root == nil
+    return nil if root.nil?
     return current_node if current_node.nil?
 
     if current_node.value > value
@@ -101,12 +103,11 @@ class Tree
         return saved_node
       end
 
-      node_to_delete = current_node.right
-      node_to_delete = node_to_delete.left until node_to_delete.left.nil?
+      replacement_node = current_node.right
+      replacement_node = replacement_node.left until replacement_node.left.nil?
 
-      saved_node = node_to_delete
-      current_node.value = saved_node.value
-      current_node.right = delete(saved_node.value, current_node.right)
+      current_node.value = replacement_node.value
+      current_node.right = delete(replacement_node.value, current_node.right)
 
     end
 
@@ -114,7 +115,7 @@ class Tree
   end
 
   def level_order
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     current_node = root
     queue = []
@@ -144,7 +145,7 @@ class Tree
   end
 
   def inorder
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     current_node = root
     result = []
@@ -172,7 +173,7 @@ class Tree
   end
 
   def inorder_recursive(current_node = root, result = [], &block)
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     unless current_node.nil?
       inorder_recursive(current_node.left, result, &block)
@@ -191,7 +192,7 @@ class Tree
   end
 
   def preorder
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     current_node = root
     result = []
@@ -218,7 +219,7 @@ class Tree
   end
 
   def postorder(current_node = root, result = [])
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     return if current_node.nil?
 
@@ -232,38 +233,12 @@ class Tree
     result
   end
 
-  def postorder_test
-    return "Error: Tree is empty." if root.nil?
-
-    stack = []
-    result = []
-    current_node = root
-
-    while !current_node.nil? || !stack.empty?
-      until current_node.nil?
-        stack << current_node
-        current_node = current_node.left
-      end
-
-      current_node = stack.last
-      if current_node.right.nil? || current_node.right == result.last
-        stack.pop
-        result << current_node.value
-        current_node = nil
-      else
-        current_node = current_node.right
-      end
-    end
-
-    p result
-  end
-
   def height(_value)
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
   end
 
   def depth(value)
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     current_node = root
     depth_count = 0
@@ -285,7 +260,7 @@ class Tree
   end
 
   def rebalance
-    return "Error: Tree is empty." if root.nil?
+    return 'Error: Tree is empty.' if root.nil?
 
     array = inorder
     @root = build_tree(inorder)
