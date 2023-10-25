@@ -242,19 +242,11 @@ class Tree
   def balanced?
     return 'Error: Tree is empty.' if root.nil?
 
-    is_balanced = false
-
     inorder do |node|
-      is_balanced = if height(node.left) == height(node.right) || height(node.left) - 1 == height(node.right)
-                      true
-                    else
-                      false
-                    end
-
-      return 'You should have aimed for the head. (false)' unless is_balanced
+      return false unless height(node.left) == height(node.right) || (height(node.left) - height(node.right)).abs == 1
     end
 
-    'Perfectly balanced, as everything should be. (true)'
+    'Perfectly balanced, as everything should be.'
   end
 
   def rebalance

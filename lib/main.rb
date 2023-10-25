@@ -1,5 +1,5 @@
-require_relative 'main/tree'
-require_relative 'main/node'
+require_relative 'tree'
+require_relative 'node'
 
 tree = Tree.new(Array.new(20) { rand(1..100) })
 
@@ -37,7 +37,6 @@ tree.rebalance
 
 tree.pretty_print
 puts "Is the tree balanced?: #{tree.balanced?}"
-
 
 puts ''
 
