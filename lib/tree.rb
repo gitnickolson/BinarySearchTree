@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'node'
 
 class Tree
@@ -42,14 +44,11 @@ class Tree
     until current_node.nil?
       return current_node if current_node.value == value
 
-      if current_node.value < value
-        previous_node = current_node
-        current_node = current_node.right
-
-      else
-        previous_node = current_node
-        current_node = current_node.left
-      end
+      current_node = if current_node.value < value
+                       current_node.right
+                     else
+                       current_node.left
+                     end
     end
 
     current_node
@@ -226,16 +225,12 @@ class Tree
     until current_node.nil?
       return p depth_count if current_node.value == value
 
-      if current_node.value < value
-        previous_node = current_node
-        current_node = current_node.right
-        depth_count += 1
-
-      else
-        previous_node = current_node
-        current_node = current_node.left
-        depth_count += 1
-      end
+      current_node = if current_node.value < value
+                       current_node.right
+                     else
+                       current_node.left
+                     end
+      depth_count += 1
     end
   end
 
@@ -254,7 +249,7 @@ class Tree
 
     return 'Error: Tree is already balanced' if balanced?
 
-    array = inorder
+    inorder
     @root = build_tree(inorder)
   end
 end

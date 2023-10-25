@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'tree'
 require_relative 'node'
 
@@ -23,7 +25,7 @@ p tree.inorder
 puts ''
 
 counter = 20
-while counter > 0
+while counter.positive?
   tree.insert(rand(100..10_000))
   counter -= 1
 end
